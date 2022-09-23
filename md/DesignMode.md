@@ -59,3 +59,33 @@ public class HungrySingleton{
 }
 ~~~
 
+为了防止其他代码通过反射拿到构造函数、修改构造函数的访问权限，可以
+~~~java
+public class Singleton{
+    private static Singleton instance;
+    private static String name = "张三";
+    private Singleton(){
+        if(instance != null)
+            throw new RuntimeException("单例模式不允许产生多个实例");
+    }
+    static class SingletonHolder{
+        public static Singleton ins;
+        public SingtonHolder(){
+            ins = new Singleton();
+        }
+    }
+    public Singleton getInstance(){
+        instance = SingletonHolder.ins;
+        return instance;
+    }
+}
+~~~
+
+为了防止别人通过反序列化拿到不同的实例，可以添加一个 `serialVersionUID` 属性以及在 `readResolve()` 方法中返回 `instance` ,这样别人通过反序列化拿到的还是当前这个实例
+
+# 工厂模式
+
+- 简单工厂模式
+
+- 抽象工厂模式
+
