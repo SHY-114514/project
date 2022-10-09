@@ -1,4 +1,5 @@
 #include <iostream>
+#include<string>
 
 #define N 10
 #define OK 1
@@ -7,7 +8,10 @@
 using namespace std;
 
 typedef int Status;
-typedef int DataType;
+typedef struct{
+    string name;
+    string author;
+} DataType;
 
 typedef struct
 {
@@ -52,20 +56,28 @@ void PrintList(SqList &L)
 {
     int i = 0;
     while (i < L.length)
-        cout << L.datas[i++] << "\t";
-    cout << "\n";
+        cout << L.datas[i].name << "\t" << L.datas[i ++] << endl;
 }
 
 int main(void)
 {
     SqList L;
-    InitList(L);
-    for (int i = 0; i < 6; i++)
-        Insert(L, (i + 11) * i, i + 1);
+    cout << "初始化测试" << endl;
+    if(!InitList(L))
+        cout << "初始化失败" << endl;
+    cout << "初始化成功" << endl;
+    cout << "插入测试" << endl;
+    for (int i = 0; i < 6; i++){
+        string name = "书籍"+to_string(i);
+        string author = "作者" + to_string(i);
+        DataType data = {name,author};
+        if(Insert(L, data, i + 1))
+            cout << "插入失败" << endl;
+    }
     PrintList(L);
-    Insert(L, 666, 3);
-    PrintList(L);
-    Delete(L,3);
+    cout << "删除测试" << endl;
+    if(!Delete(L,3))
+        cout << "删除失败" << endl;
     PrintList(L);
     return 0;
 }
