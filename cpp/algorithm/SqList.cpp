@@ -1,83 +1,108 @@
 #include <iostream>
-#include<string>
+#include <string>
 
 #define N 10
-#define OK 1
-#define ERROR 0
 
 using namespace std;
 
-typedef int Status;
-typedef struct{
-    string name;
-    string author;
-} DataType;
-
 typedef struct
 {
-    DataType *datas;
+    string name;
+    string author;
+    string publish;
+} Book;
+
+class SqList
+{
+private:
+    Book *books;
     int length;
-} SqList;
 
-Status InitList(SqList &L)
-{
-    L = *(new SqList());
-    L.length = 0;
-    L.datas = new DataType[N];
-    return OK;
-}
-
-Status Insert(SqList &L, DataType data, int position)
-{
-    if (position <= 0 || position > L.length + 1 || L.length > N - 1)
-        return ERROR;
-    int p = L.length;
-    while (p > 0 && p >= position)
+public:
+    SqList()
     {
-        L.datas[p] = L.datas[p - 1];
-        --p;
+        this->length = 0;
+        this->books = new Book[N];
     }
-    L.datas[p] = data;
-    ++L.length;
-    return OK;
-}
-
-Status Delete(SqList &L,int position)
-{
-    if(position < 1 || position > L.length)
-        return ERROR;
-    for(int p = position;p < L.length;p ++)
-        L.datas[p -1] = L.datas[p];
-    -- L.length;
-    return OK;
-}
-
-void PrintList(SqList &L)
-{
-    int i = 0;
-    while (i < L.length)
-        cout << L.datas[i].name << "\t" << L.datas[i ++] << endl;
-}
+    int insert(Book book, int position)
+    {
+        if (this->length >= N || position < 0 || position > this->length + 1)
+            return 0;
+        int l = this->length;
+        if (position > 0)
+            while (l >= position)
+            {
+                this->books[l] = this->books[l - 1];
+                --l;
+            }
+        this->books[l] = book;
+        ++this->length;
+        return 1;
+    }
+    int remove(int position)
+    {
+        if (position < 1 || position > this->length)
+            return 0;
+        int i = position - 1;
+        while (i < this->length)
+        {
+            this->books[i] = this->books[i + 1];
+            ++i;
+        }
+        --this->length;
+        return 1;
+    }
+    int locate(string name)
+    {
+        int position = 0;
+        while (name.compare(this->books[position].name) != 0)
+            ++position;
+        return position + 1;
+    }
+    Book &find(int position)
+    {
+        return this->books[position - 1];
+    }
+    void print()
+    {
+        int l = 0;
+        while (l < this->length)
+        {
+            cout << this->books[l].name << "\t";
+            cout << this->books[l].author << "\t";
+            cout << this->books[l].publish << endl;
+            ++l;
+        }
+    }
+    int getLength(){
+        return this->length;
+    }
+};
 
 int main(void)
 {
+    cout << "初始化顺序表" << endl;
     SqList L;
-    cout << "初始化测试" << endl;
-    if(!InitList(L))
-        cout << "初始化失败" << endl;
-    cout << "初始化成功" << endl;
-    cout << "插入测试" << endl;
-    for (int i = 0; i < 6; i++){
-        string name = "书籍"+to_string(i);
-        string author = "作者" + to_string(i);
-        DataType data = {name,author};
-        if(Insert(L, data, i + 1))
+    cout << "顺序添加书籍" << endl;
+    Book book;
+    for (int i = 1; i < 6; i++)
+    {
+        book.name = "书籍" + to_string(i);
+        book.author = "作者" + to_string(i);
+        book.publish = "出版社" + to_string(i);
+        if (!L.insert(book, 0))
             cout << "插入失败" << endl;
     }
-    PrintList(L);
-    cout << "删除测试" << endl;
-    if(!Delete(L,3))
-        cout << "删除失败" << endl;
-    PrintList(L);
+    L.print();
+    cout << "指定位置添加" << endl;
+    if (!L.insert(book, 3))
+        cout << "插入失败" << endl;
+    L.print();
+    cout << "删除第三本书籍" << endl;
+    L.remove(3);
+    L.print();
+    cout << "根据书名查找 书籍1:  " << L.locate("书籍1") << endl;
+    cout << "根据位置查找第 三 本书:  " << L.find(3).name << endl;
+    cout << "顺序表的长度为:  " << L.getLength() << endl;
     return 0;
 }
