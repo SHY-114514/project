@@ -91,7 +91,7 @@ Person p1("张三","17");
 - 析构函数在类被销毁前自动调用的函数
 
 
-<span style="color:yellow">构造函数与析构函数如果未定义，则编译器会自动为你添加空的构造函数和析构函数，并且在初始化和销毁时自动调用</span>
+<span style="color:blue">构造函数与析构函数如果未定义，则编译器会自动为你添加空的构造函数和析构函数，并且在初始化和销毁时自动调用</span>
 
 
 构造函数函数名与类名相同，无需写返回值类型，有参数列表，可以被重载
@@ -143,5 +143,39 @@ MyClass(20);
 cout << "ABC" << endl;
 //隐式转换法
 Person p5 = 10; //自动匹配对应的有参构造函数并传值调用
+~~~
+
+~~~cpp
+class A{ };
+class Person{
+    string name;
+    int age;
+    A a;
+};
+/*
+#实例化 Person 类，A 类会先被创建，
+#释放 Person 类时，A 类后被释放
+*/
+~~~
+
+##### 4）成员属性&成员方法
+
+在 cpp 中，类在内存中所占的字节大小只与成员属性有关，成员方法不会影响类的大小（在 cpp 底层，所有的对象用一个 this 指针常量来表示当前调用该方法的对象）
+
+~~~cpp
+class A{
+    char sex;
+    int age;
+};
+class B{
+    int age;
+    int getAge(){ return this->age; }
+}
+void main(){
+    A a;
+    cout << sizeof(a) << endl;  // 1+4 byte
+    B b;
+    cout << sizeof(b) << endl;  // 4 byte
+}
 ~~~
 
